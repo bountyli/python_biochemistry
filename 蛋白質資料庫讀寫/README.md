@@ -1,4 +1,4 @@
-# 蛋白質資料庫 (Protein Data Bank) 讀寫教學
+# 林湘芸的蛋白質資料庫 (Protein Data Bank) 讀寫教學
 
 使用RCSB Protein Data Bank中下載的蛋白質PDB檔案，練習以python作檔案讀寫。
 
