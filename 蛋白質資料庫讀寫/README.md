@@ -90,3 +90,69 @@ for path in filenames:
 REMARK   2 RESOLUTION.    3.10 ANGSTROMS.        
 ```
 由於我們希望單獨獲取解析度數值，使用split()語法將該行內容以空格為分隔點，拆解行內容並以變數words儲存，words變數格式為list，解析度為該list中的第4格元素，使用words[3]獲取該數值。以上為其中一個循環，當迴圈循環所有檔案路徑後，我們就可以得到所有蛋白酶的實驗解析度。
+
+現在，除了蛋白酶的實驗解析度外，我們還希望可以將蛋白酶的名稱也同時提取。使用os.path.basename()函式我們可以去除檔案路徑，單獨得到檔案名稱與副檔名。稍微修改迴圈的內容，讀取檔案同時將名稱儲存下來。
+
+```python
+for path in filenames:
+    file_name = os.path.basename(path)
+    split_filename = file_name.split('.')
+    molecule_name = split_filename[0]
+    
+    with open(path, 'r') as outfile:
+        data = outfile.readlines()
+    
+    for line in data:
+        if 'RESOLUTION.' in line:
+            res_line = line
+            words = res_line.split()
+            resolution = float(words[3])
+            print(molecule_name, ": ", resolution, " Angstroms", sep="")
+```
+輸出結果
+```
+1ddo: 3.1 Angstorms
+2pkr: 2.4 Angstorms
+3iva: 2.7 Angstorms
+3vnd: 2.6 Angstorms
+4eyr: 1.8 Angstorms
+5eu9: 2.05 Angstorms
+5veu: 2.91 Angstorms
+6zt7: 1.85 Angstorms
+7tim: 1.9 Angstorms
+```
+上面split('.')函式將檔案名稱與副檔名以.號為分隔點分開，我們只需要名稱即可以，所以已split_filename中的第一格元素提取，並儲存在變數molecule_name中。
+
+### 將提取出的資料另存新檔
+最後我們將提取的所有資料整理後儲存在txt檔案中，前面我們已經使用with open的語法讀取檔案，現在同樣可以來寫入檔案，只要將參數'r'改為'w+'即可，其中與'w'相同為寫入模式，但'w+'除了寫入同時可以讀取，要注意寫入模式若是檔案已存在，會覆蓋原先所有內容。同樣再次修改上面迴圈
+```python
+with open('resolution.txt','w+') as outputfile:
+    for path in filenames:
+        file_name = os.path.basename(path)
+        split_filename = file_name.split('.')
+        molecule_name = split_filename[0]
+
+        with open(path, 'r') as outfile:
+            data = outfile.readlines()
+
+        for line in data:
+            if 'RESOLUTION.' in line:
+                res_line = line
+                words = res_line.split()
+                resolution = float(words[3])
+                outputfiles.write(F'{molecule_name} : {resolution} Angstorms \n')
+```
+outputfiles.write()為寫入檔案之函式，其中F為格式化字串的方法，有可讀性且更簡潔不易出錯，使用方法為以單引號將要寫入之內容包住，變數部分以大括號包住即可。執行上述程式碼後，會在同路徑下生成resolutions.txt檔案內容為
+```
+1ddo : 3.1 Angstorms 
+2pkr : 2.4 Angstorms 
+3iva : 2.7 Angstorms 
+3vnd : 2.6 Angstorms 
+4eyr : 1.8 Angstorms 
+5eu9 : 2.05 Angstorms 
+5veu : 2.91 Angstorms 
+6zt7 : 1.85 Angstorms 
+7tim : 1.9 Angstorms 
+```
+
+教學結束!!
