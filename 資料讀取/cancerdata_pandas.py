@@ -65,3 +65,11 @@ print(new_cancer_df_3)
 new_cancer_df_4 = cancer_df.sort_values(["Total patients"],ascending=False)
 print("遞減排序")
 print(new_cancer_df_4)
+
+#利用條件式來篩選所需資料
+print("篩選Total patients大於10的資料")
+print(cancer_df[cancer_df["Total patients"] > 10])
+
+#找出包含特定值的資料集
+print("篩選Tumor為pancreatic cancer的資料集")
+print(cancer_df[cancer_df["Tumor"].isin(["pancreatic cancer"])])
