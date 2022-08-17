@@ -1,6 +1,6 @@
 # 蛋白質資料庫 (Protein Data Bank) 讀寫教學
 
-使用 RCSB Protein Data Bank 中下載的蛋白質 PDB 檔案，練習以 python 作檔案讀寫。
+使用RCSB Protein Data Bank中下載的蛋白質PDB檔案，練習以python作檔案讀寫。
 
 RCSB Protein Data Bank 網站: https://www.rcsb.org/ 
 
@@ -25,3 +25,55 @@ PDB檔案中包含著蛋白質或是核酸的三維結構數據，大多數結�
     * REMARK 2 (最大分辨率)
     * REMARK 3 (使用程式和統計方法)
   * etc......
+
+
+### 使用 python 處理多個檔案
+假設目前有100個或是1000個檔案要分析數據，要單獨打開每個檔案 ctrl+c ctrl+v 超級無敵沒效率。使用 python 搭配迴圈讀取檔案，簡單幾行程式就可以一瞬間提取數據。以此為例，我們將讀取PDB資料庫中一系列酶結構的檔案，並提取分辨率數據和原子計數。所有的PDB檔案都保存在PDB_files的文件夾中，將該文件下載，並與執行程式表存在同一目錄。
+
+首先，導入os模組，讓我們可以處裡資料夾中的檔案路徑
+
+```python
+ import os
+ file_location = os.path.join('data','PDB_files','*.pdb')
+ print(file_location)
+```
+
+>data/PDB_files/*.pdb
+
+.path.join()為os模組中重新組合路徑的函式，萬用字元*可以讓我們指定名為data\PDB_files下，所有副檔名為.pdb的檔案。
+
+接下來，使用glob模組中的glob函式，由於函式名稱與模組相同，因此glob重複打了兩次，此函式可以輸出所有符合條件的檔案路徑，並以list格式回傳。
+
+```python
+import glob
+filenames = glob.glob(file_location)
+print(filenames)
+```
+
+>['data\\PDB_files\\1ddo.pdb', 'data\\PDB_files\\2pkr.pdb', 'data\\PDB_files\\3iva.pdb', 'data\\PDB_files\\3vnd.pdb', 'data\\PDB_files\\4eyr.pdb', 'data\\PDB_files\\5eu9.pdb', 'data\\PDB_files\\5veu.pdb', 'data\\PDB_files\\6zt7.pdb', 'data\\PDB_files\\7tim.pdb']
+
+### 使用迴圈循環讀取多個檔案
+現在我們有PDB_files文件夾中所有.pdb檔案路徑的list，為了能夠讀取所有檔案，使用for迴圈來歷遍每個檔案路徑。
+
+```python
+for path in filenames:
+    with open(path, 'r') as outfile:
+        data = outfile.readlines()
+    
+    for line in data:
+        if 'RESOLUTION.' in line:
+            res_line = line
+            words = res_line.split()
+            resolution = float(words[3])
+            print(resolution)
+```
+
+>3.1
+>2.4
+>2.7
+>2.6
+>1.8
+>2.05
+>2.91
+>1.85
+>1.9 
